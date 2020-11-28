@@ -17,12 +17,10 @@ public class WriteToFile {
     3. * Не использовать сканер в процессе считывания данных из консоли
     */
     public static void main(String[] args) throws IOException {
-        InputStream in = System.in;
-        StringBuilder stringBuilder = new StringBuilder();
         File file = new File("log");
         String inputStrings = "";
 
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
              FileWriter fileWriter = new FileWriter(file, true)) {
 
             while (!inputStrings.equals("exit")) {
