@@ -12,7 +12,7 @@ package lesson4;
 Используйте wait/notify/notifyAll.
 */
 public class Solution {
-    private final Object locK = new Object();
+    private final Object lock = new Object();
     char charA = 'A';
     char charB = 'B';
     char charC = 'C';
@@ -30,15 +30,15 @@ public class Solution {
     }
 
     public void printA() {
-        synchronized (locK) {
+        synchronized (lock) {
             try {
                 for (int i = 0; i < 5; i++) {
                     while (currentLetter != charA) {
-                        locK.wait();
+                        lock.wait();
                     }
                     System.out.print(charA);
                     currentLetter = charB;
-                    locK.notifyAll();
+                    lock.notifyAll();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -47,15 +47,15 @@ public class Solution {
     }
 
     public void printB() {
-        synchronized (locK) {
+        synchronized (lock) {
             try {
                 for (int i = 0; i < 5; i++) {
                     while (currentLetter != charB) {
-                        locK.wait();
+                        lock.wait();
                     }
                     System.out.print(charB);
                     currentLetter = charC;
-                    locK.notifyAll();
+                    lock.notifyAll();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -64,15 +64,15 @@ public class Solution {
     }
 
     public void printC() {
-        synchronized (locK) {
+        synchronized (lock) {
             try {
                 for (int i = 0; i < 5; i++) {
                     while (currentLetter != charC) {
-                        locK.wait();
+                        lock.wait();
                     }
                     System.out.print(charC);
                     currentLetter = charA;
-                    locK.notifyAll();
+                    lock.notifyAll();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
