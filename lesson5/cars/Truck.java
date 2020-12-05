@@ -9,7 +9,6 @@ public class Truck extends Cars{
         super.setFuelFullCapacities(60);
         super.setFuelConsumption(15f);
         super.setFuelCapacities(getFuelFullCapacities());
-//        id = Cars.getIdCars();
         stringId = getStringID();
     }
 

@@ -1,8 +1,12 @@
 package lesson5.gasStation;
 
 
+import lesson5.Main;
 import lesson5.cars.Cars;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -15,44 +19,40 @@ public class FuelStation {
     public static final int CAR_RESTRICTION = 3;
     private Semaphore semaphore;
 
-
-//    private Cars cars;
-
-
     public FuelStation() {
         this.gasPool = new GasPool();
         this.semaphore = new Semaphore(CAR_RESTRICTION);
 
     }
 
+    public float getFuelReserveFS() {
+        System.out.println("getFuelReserveFS() - " + gasPool.getFuelReserveGP());
+        return gasPool.getFuelReserveGP();
+    }
 
-    public void refuelTheCar(Cars cars) {
+    public float refuelTheCar(float amount, Cars car) {
+
 
         try {
+            System.out.printf("[%s] прибыл на заправку%n", car.getStringID());
             semaphore.acquire();
-
-//              lock.writeLock();
-            float requiredFuel = cars.getFuelFullCapacities() - cars.getFuelCapacities(); //получаем значение нужного количества топлива
-            if (gasPool.getFuelReserve() - requiredFuel >= 0) {
-                Thread.sleep(300);
-                System.out.printf("[%s} Заправка...%n", cars.getStringID());
-                cars.setFuelCapacities(cars.getFuelCapacities() + requiredFuel);
-                System.out.printf("requiredFuel %.1f\n", requiredFuel);
-                gasPool.request(requiredFuel);
-
-            } else {
-                System.out.printf("[%s} заправка не состоялась%n", cars.getStringID());
-//              return 0;
+            System.out.printf("[%s] requiredFuel(float amount) %.1f\n", car.getStringID(), amount);
+            if (gasPool.getFuelReserveGP() - amount >= 0) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return gasPool.request(amount);
             }
-
-
+            System.out.println("[Заправка] - Нету топлива");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             semaphore.release();
-//            lock.writeLock().unlock();
         }
-
+        return 0F;
     }
+
 
 }

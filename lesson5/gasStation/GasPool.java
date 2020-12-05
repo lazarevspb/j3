@@ -1,52 +1,35 @@
 package lesson5.gasStation;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class GasPool {
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-
     private final float capacity = 200f;
     private volatile static float fuelReserve = 200f;
 
-    public float getFuelReserve() {
+    protected float getFuelReserveGP() {
         return fuelReserve;
     }
 
-
-    public void setFuelReserve(float fuelReserve) {
-        GasPool.fuelReserve = fuelReserve;
-    }
-
-
     //для выведения информации о фактическом состоянии
-    synchronized public String info() {
+ synchronized public String info() {
         return "GasPool{" +
                 "capacity=" + capacity +
                 ", fuelReserve=" + fuelReserve +
-                '}';
+                '}' +" " + Thread.currentThread().getName();
     }
 
-    //для получения необходимого кол-ва топлива
-   synchronized void  request(float amount) {
-        if (fuelReserve - amount >= 0) {
+   synchronized float  request(float amount) {
             lock.writeLock().lock();
-//            System.out.printf("amount %.1f\n", amount);
+        if (fuelReserve - amount >= 0) {
             fuelReserve -= amount;
-//            lock.readLock();
-            System.out.println(info());
             lock.writeLock().unlock();
-//            lock.readLock().unlock();
+
+            System.out.println(info());
+            return amount;
         } else {
             System.out.println("На заправке не хватает топлива");
+            return 0F;
         }
-    }
-
-    @Override
-    public String toString() {
-        return info();
     }
 }

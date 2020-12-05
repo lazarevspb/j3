@@ -1,7 +1,6 @@
 package lesson5.cars;
 
 public class Bus extends Cars {
-    //    private int id;
     private final String stringId;
 
     public Bus() {
@@ -9,7 +8,6 @@ public class Bus extends Cars {
         super.setFuelFullCapacities(40);
         super.setFuelConsumption(7.5f);
         super.setFuelCapacities(getFuelFullCapacities());
-//        id = Cars.getIdCars();
         stringId = getStringID();
     }
 

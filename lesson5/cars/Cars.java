@@ -64,9 +64,22 @@ public abstract class Cars implements Runnable {
     @Override
     public void run() {
         theCarIsMoving();
-        fuelStation.refuelTheCar(this);
+    }
 
+    private void refuelingACar() {
+        System.out.printf("[%s] Топливо - %.1f, заезжаю на заправку\n", stringID, countingTheRemainingFuel());
+        float requiredFuel = getFuelFullCapacities() - getFuelCapacities();
+        System.out.printf("[%s} Заправка...%n", getStringID());
 
+       if(fuelStation.getFuelReserveFS() - requiredFuel  > 0) {
+            fuelStation.refuelTheCar(requiredFuel, this);
+           this.fuelCapacities += requiredFuel;
+           System.out.printf("[%s] Заправлен полный бак%n", stringID);
+       }  else {
+           System.out.printf("[%s] заправка не состоялась%n", stringID);
+           return;
+       }
+        theCarIsMoving();
     }
 
     protected void theCarIsMoving() {
@@ -75,12 +88,12 @@ public abstract class Cars implements Runnable {
             remainingFuel = countingTheRemainingFuel();
             System.out.printf("[%s] Едем...%n", stringID);
             try {
-                Thread.sleep(800);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.printf("[%s] Топливо - %.1f, заезжаю на заправку\n",
-                stringID, countingTheRemainingFuel());
+        refuelingACar();
+
     }
 }
