@@ -4,14 +4,13 @@ import lesson5.cars.Bus;
 import lesson5.cars.Car;
 import lesson5.cars.Cars;
 import lesson5.cars.Truck;
-import lesson5.gasStation.FuelStation;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Main {
-    public static final int NUMBER_OF_CARS = 5;
+    public static final int NUMBER_OF_CARS = 9;
 
     public static void main(String[] args) {
         ArrayList<Cars> carsArrayList = new ArrayList<>();
@@ -26,8 +25,8 @@ public class Main {
 
     protected static Cars getCars(int i) {
         return i < NUMBER_OF_CARS / 3
-                ? new Car()
+                ? new Truck()
                 : i > NUMBER_OF_CARS / 3 && i <= NUMBER_OF_CARS / 3 + NUMBER_OF_CARS / 3 ? new Bus()
-                : new Truck();
+                : new Car();
     }
 }

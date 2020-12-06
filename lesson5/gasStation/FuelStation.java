@@ -1,12 +1,8 @@
 package lesson5.gasStation;
 
 
-import lesson5.Main;
 import lesson5.cars.Cars;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -22,36 +18,37 @@ public class FuelStation {
     public FuelStation() {
         this.gasPool = new GasPool();
         this.semaphore = new Semaphore(CAR_RESTRICTION);
-
     }
 
-    public float getFuelReserveFS() {
-        System.out.println("getFuelReserveFS() - " + gasPool.getFuelReserveGP());
-        return gasPool.getFuelReserveGP();
+    public boolean isEnoughFuel(float amount) {
+        return gasPool.getFuelReserveGP() - amount >= 0;
     }
+
 
     public float refuelTheCar(float amount, Cars car) {
-
-
         try {
+            semaphore.acquire(3);
             System.out.printf("[%s] прибыл на заправку%n", car.getStringID());
-            semaphore.acquire();
-            System.out.printf("[%s] requiredFuel(float amount) %.1f\n", car.getStringID(), amount);
-            if (gasPool.getFuelReserveGP() - amount >= 0) {
+            System.out.printf("[%s] Запрос топлива в количестве %.1f, на складе %.1f \n", car.getStringID(), amount, gasPool.getFuelReserveGP());
+            if (gasPool.isEnoughFuel(amount)) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(500);
+                    return gasPool.request(amount);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                return gasPool.request(amount);
+            } else {
+                System.out.println("[Заправка] - Нету топлива");
             }
-            System.out.println("[Заправка] - Нету топлива");
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
+            System.out.println(gasPool.info());
             semaphore.release();
+
         }
-        return 0F;
+        return 0;
     }
 
 
