@@ -9,14 +9,18 @@ public class GasPool {
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final float capacity = 200f;
-    private volatile static float fuelReserve = 200f;
+    private static float fuelReserve = 200f;
 
     protected float getFuelReserveGP() {
-        return fuelReserve;
+
+        lock.readLock().lock();
+        float tmp = fuelReserve;
+        lock.readLock().unlock();
+        return tmp;
     }
 
     //для выведения информации о фактическом состоянии
-    synchronized public String info() {
+    public String info() {
         if (fuelReserve < 0) System.err.printf("Отрицательный fuelReserve = %f%n", fuelReserve);
         return "[Склад]{" +
                 "Общий объем = " + capacity +
@@ -28,20 +32,24 @@ public class GasPool {
         return fuelReserve - amount >= 0;
     }
 
-    synchronized float request(float amount) {
-        if (isEnoughFuel(amount)) {
-            lock.writeLock().lock();
-            fuelReserve -= amount;
+    public float request(float amount) {
+        lock.writeLock().lock();
+        try {
+            if (isEnoughFuel(amount)) {
+                fuelReserve -= amount;
 
-            date = new Date();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:sssss");
-            simpleDateFormat.format(date);
+                date = new Date();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:sssss");
+                simpleDateFormat.format(date);
 
+                return amount;
+            } else {
+                System.err.printf("[Склад] Не хватает топлива для заправки = %.1f%n", fuelReserve);
+                return 0F;
+            }
+        } finally {
             lock.writeLock().unlock();
-            return amount;
-        } else {
-            System.err.printf("[Склад] Не хватает топлива для заправки = %.1f%n", fuelReserve);
-            return 0F;
+
         }
     }
 }

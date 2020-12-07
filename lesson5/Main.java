@@ -4,6 +4,7 @@ import lesson5.cars.Bus;
 import lesson5.cars.Car;
 import lesson5.cars.Cars;
 import lesson5.cars.Truck;
+import lesson5.gasStation.FuelStation;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -24,9 +25,10 @@ public class Main {
     }
 
     protected static Cars getCars(int i) {
+        FuelStation fuelStation = new FuelStation();
         return i < NUMBER_OF_CARS / 3
-                ? new Truck()
-                : i > NUMBER_OF_CARS / 3 && i <= NUMBER_OF_CARS / 3 + NUMBER_OF_CARS / 3 ? new Bus()
-                : new Car();
+                ? new Truck(fuelStation)
+                : i > NUMBER_OF_CARS / 3 && i <= NUMBER_OF_CARS / 3 + NUMBER_OF_CARS / 3 ? new Bus(fuelStation)
+                : new Car(fuelStation);
     }
 }
