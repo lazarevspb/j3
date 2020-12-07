@@ -3,8 +3,7 @@ package lesson5.cars;
 import lesson5.gasStation.FuelStation;
 
 public abstract class Cars implements Runnable {
-
-    FuelStation fuelStation = new FuelStation();
+    FuelStation fuelStation;
     private static int idCars = 1;
     private final String stringID;
     private float fuelFullCapacities; // объемом топлива
@@ -12,11 +11,14 @@ public abstract class Cars implements Runnable {
 
     private float fuelCapacities; // объемом топлива
 
-    public Cars() {
+    public Cars(FuelStation fuelStation) {
         fuelCapacities = fuelFullCapacities;
         this.stringID = getRusName() + "_" + idCars;
+        this.fuelStation = fuelStation;
         idCars++;
     }
+
+
 
     public void setFuelCapacities(float fuelCapacities) {
         this.fuelCapacities = fuelCapacities;
@@ -57,7 +59,6 @@ public abstract class Cars implements Runnable {
 
     private void refuelingACar() {
         float requiredFuel = fuelFullCapacities - fuelCapacities;
-
         if (fuelStation.isEnoughFuel(requiredFuel)) {
             System.out.printf("[%s} Заправка...%n", stringID);
             fuelStation.refuelTheCar(requiredFuel, this);
